@@ -1,0 +1,208 @@
+.navbar-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--header-height);
+  background: var(--bg-navbar);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  position: relative;
+  user-select: none;
+}
+
+.logo-glow {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: var(--color-primary);
+  filter: blur(25px);
+  opacity: 0.6;
+  left: -10px;
+}
+
+.logo-text {
+  color: var(--text-primary);
+}
+
+.logo-accent {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 6px;
+  transition: margin 0.2s ease;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.status-label {
+  color: var(--text-secondary);
+}
+
+.status-value {
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.pulse-animation {
+  animation: pulse-glow-simple 1.5s infinite;
+}
+
+@keyframes pulse-glow-simple {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.9); }
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.85rem;
+}
+
+.profile-icon {
+  color: var(--color-primary);
+}
+
+.profile-id {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(244, 63, 94, 0.08);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  color: var(--text-loss);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--border-radius-sm);
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: var(--color-loss);
+  color: #fff;
+  box-shadow: var(--shadow-loss-glow);
+  transform: translateY(-1px);
+}
+
+.theme-toggle-btn-private {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+}
+
+.theme-toggle-btn-private:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  transform: scale(1.05);
+}
+
+:root[data-theme='light'] .theme-toggle-btn-private:hover {
+  background: rgba(15, 23, 42, 0.05);
+}
+
+.btn-sidebar-toggle {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+}
+
+.btn-sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  transform: scale(1.05);
+  box-shadow: var(--shadow-glow);
+}
+
+:root[data-theme='light'] .btn-sidebar-toggle {
+  background: rgba(15, 23, 42, 0.03);
+}
+
+:root[data-theme='light'] .btn-sidebar-toggle:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+/* Responsiveness overrides for logo on small mobile screens */
+@media (max-width: 576px) {
+  .brand-logo {
+    font-size: 1.05rem;
+  }
+  .logo-accent {
+    margin-left: 4px;
+  }
+  .navbar-right {
+    gap: 8px;
+  }
+  .btn-sidebar-toggle {
+    width: 32px;
+    height: 32px;
+  }
+}

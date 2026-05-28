@@ -1,0 +1,288 @@
+.app-sidebar {
+  position: fixed;
+  top: var(--header-height);
+  bottom: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 99;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item-container {
+  position: relative;
+}
+
+.menu-item-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  border-radius: var(--border-radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item-btn:hover {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+  padding-left: 20px;
+}
+
+.menu-item-btn.active {
+  background: rgba(59, 130, 246, 0.06);
+  border-left: 3px solid var(--color-primary);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.menu-icon {
+  transition: transform 0.2s ease;
+  color: var(--text-muted);
+}
+
+.menu-item-btn:hover .menu-icon {
+  color: var(--color-primary);
+  transform: scale(1.05);
+}
+
+.menu-item-btn.active .menu-icon {
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.4));
+}
+
+.active-glow-indicator {
+  position: absolute;
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  filter: blur(10px);
+  opacity: 0.5;
+  border-radius: 50%;
+}
+
+.sidebar-footer {
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* --- Premium Profile Card in Sidebar Footer --- */
+.sidebar-profile-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  padding: 10px 12px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar-profile-card:hover {
+  background: rgba(59, 130, 246, 0.04);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-profile-card.active {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-glow);
+}
+
+.profile-avatar-wrapper {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.sidebar-profile-card:hover .profile-avatar-wrapper {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: var(--color-primary);
+}
+
+.sidebar-profile-card.active .profile-avatar-wrapper {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.profile-avatar-icon {
+  color: var(--color-primary);
+  transition: all 0.25s ease;
+}
+
+.sidebar-profile-card.active .profile-avatar-icon {
+  color: #fff;
+}
+
+.profile-avatar-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 50%;
+}
+
+.sidebar-profile-card:hover .profile-avatar-glow {
+  opacity: 0.3;
+}
+
+.profile-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.profile-meta-name {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-meta-role {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Sidebar collapsed footer layout */
+.app-container.sidebar-collapsed .sidebar-profile-card {
+  justify-content: center;
+  padding: 10px 0;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  margin: 0 auto;
+  gap: 0;
+}
+
+.app-container.sidebar-collapsed .sidebar-profile-card .profile-avatar-wrapper {
+  border: none;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+}
+
+.app-container.sidebar-collapsed .sidebar-profile-card:hover {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-glow);
+}
+
+/* --- Premium CSS Tooltips for Collapsed Sidebar --- */
+.app-container.sidebar-collapsed .menu-item-container {
+  position: relative;
+}
+
+.app-container.sidebar-collapsed .menu-item-container::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 64px; /* Positions perfectly to the right of collapsed 70px sidebar */
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.8rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+}
+
+.app-container.sidebar-collapsed .menu-item-container::before {
+  content: '';
+  position: absolute;
+  left: 56px;
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent var(--bg-secondary) transparent transparent;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+
+.app-container.sidebar-collapsed .menu-item-container:hover::after {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+.app-container.sidebar-collapsed .menu-item-container:hover::before {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Override padding hover wobbly animation when collapsed */
+.app-container.sidebar-collapsed .app-sidebar .menu-item-btn:hover {
+  padding-left: 0 !important;
+  padding: 12px 0 !important;
+  background: rgba(255, 255, 255, 0.04);
+}

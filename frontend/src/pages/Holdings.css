@@ -1,0 +1,301 @@
+.holdings-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* --- Banner Cards Grid --- */
+.holdings-banner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.banner-card {
+  padding: 20px 24px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.banner-card-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.banner-card-val {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.banner-card-pct {
+  margin-top: 2px;
+}
+
+/* --- Holdings Table Header Sync --- */
+.holdings-table-card {
+  padding: 24px !important;
+}
+
+.table-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.sync-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  padding: 6px 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.spin-animation {
+  animation: spin 3s linear infinite;
+}
+
+/* --- Action Cells & Table Layout --- */
+.table-actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn-action {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.buy-btn-action {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--text-gain);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.buy-btn-action:hover {
+  background: var(--color-gain);
+  color: #fff;
+  box-shadow: var(--shadow-gain-glow);
+}
+
+.sell-btn-action {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--text-loss);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+}
+
+.sell-btn-action:hover {
+  background: var(--color-loss);
+  color: #fff;
+  box-shadow: var(--shadow-loss-glow);
+}
+
+.predictor-btn-action:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #fff;
+  border-color: var(--color-primary) !important;
+}
+
+.day-pnl-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.text-primary-color {
+  color: var(--color-secondary);
+}
+
+/* --- Modal Backdrop & Glassmorphic Content --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(3, 5, 15, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 440px;
+  padding: 30px !important;
+  background: rgba(12, 19, 41, 0.95) !important;
+  border-color: rgba(59, 130, 246, 0.25) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), var(--shadow-glow) !important;
+  border-radius: var(--border-radius-lg) !important;
+  animation: modal-zoom 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modal-zoom {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-close-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-btn:hover {
+  color: var(--text-primary);
+}
+
+.modal-stock-details {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.modal-stock-symbol {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.modal-stock-name {
+  font-size: 0.85rem;
+}
+
+.modal-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(244, 63, 94, 0.08);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  padding: 10px 12px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.82rem;
+  margin-bottom: 20px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-action-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--bg-primary);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.modal-action-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.modal-action-btn.buy.active {
+  background: var(--color-gain);
+  color: #fff;
+  box-shadow: var(--shadow-gain-glow);
+}
+
+.modal-action-btn.sell.active {
+  background: var(--color-loss);
+  color: #fff;
+  box-shadow: var(--shadow-loss-glow);
+}
+
+.modal-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.summary-value {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.modal-submit-btn {
+  width: 100%;
+  padding: 12px !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  border-radius: var(--border-radius-md) !important;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

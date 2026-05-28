@@ -1,0 +1,302 @@
+.dashboard-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* --- Indices Grid & Flashing Ticks --- */
+.indices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.index-card {
+  padding: 16px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.index-card:hover {
+  transform: translateY(-2px);
+}
+
+.index-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.index-title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.index-pct {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.index-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.index-price {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.index-change {
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+/* --- Metrics Summary Grid --- */
+.metrics-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.metric-card {
+  padding: 24px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metric-card:hover {
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: var(--shadow-glow);
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metric-label {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.metric-icon-bg {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metric-icon-bg.primary {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-primary);
+}
+
+.metric-icon-bg.secondary {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-secondary);
+}
+
+.metric-icon-bg.accent {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--color-accent);
+}
+
+.metric-value {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.metric-subtext {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.badge-pill {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-flex;
+}
+
+/* --- Recharts Visualizations Grid --- */
+.charts-visual-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .charts-visual-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-container-card {
+  padding: 24px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-heading {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.recharts-wrapper {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.pie-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.pie-legend {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+  margin-top: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-name {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.empty-chart-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  text-align: center;
+  padding: 0 20px;
+  font-size: 0.88rem;
+}
+
+/* --- Holdings Table Summary --- */
+.dashboard-holdings-list {
+  padding: 24px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.list-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 4px 8px;
+}
+
+.btn-link:hover {
+  color: var(--text-primary);
+  transform: translateX(2px);
+}
+
+.table-equity-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.equity-symbol {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.equity-desc {
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.pnl-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pnl-pct-small {
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.btn-action-small {
+  font-size: 0.78rem !important;
+  padding: 6px 12px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+}
+
+.btn-action-small:hover {
+  background: var(--color-primary-glow) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.empty-holdings-list {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 0.9rem;
+}
