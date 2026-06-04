@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import Optional, List
 import re
 import concurrent.futures
+import pandas as pd
 
 from predictor import predict_stock_price, generate_historical_data, STOCK_METADATA
 
@@ -234,10 +235,14 @@ def login(request: LoginRequest):
     Syncs real holdings into Firebase Realtime Database in real-time.
     Falls back gracefully to simulated portfolios if offline or during credentials refresh.
     """
+    global ACTIVE_SMARTCONNECT, ACTIVE_REFRESH_TOKEN
     client_id = request.clientId
     
-    # 1. Handle Demo Mode instantly
+    # 1. Handle Demo Mode instantly (explicitly clear any previous active real sessions)
     if request.isDemo:
+        ACTIVE_SMARTCONNECT = None
+        ACTIVE_REFRESH_TOKEN = None
+        
         holdings = fetch_user_holdings(client_id)
         if not holdings:
             seed_initial_portfolio(client_id)
@@ -284,7 +289,6 @@ def login(request: LoginRequest):
         session_data = smart_connect.generateSession(clean_client_id, clean_password, totp_code)
         
         if session_data.get("status") == True:
-            global ACTIVE_SMARTCONNECT, ACTIVE_REFRESH_TOKEN
             ACTIVE_SMARTCONNECT = smart_connect
             ACTIVE_REFRESH_TOKEN = session_data.get("data", {}).get("refreshToken")
             real_broker_active = True
@@ -359,6 +363,16 @@ def login(request: LoginRequest):
         "holdings": holdings
     }
 
+@app.post("/api/logout")
+def logout():
+    """
+    Explicitly terminates and clears the active broker session and tokens from memory.
+    """
+    global ACTIVE_SMARTCONNECT, ACTIVE_REFRESH_TOKEN
+    ACTIVE_SMARTCONNECT = None
+    ACTIVE_REFRESH_TOKEN = None
+    return {"success": True, "message": "Broker session cleared from memory successfully."}
+
 @app.get("/api/profile")
 def get_user_profile(clientId: str = "ANGEL-DEMO-99"):
     """
@@ -367,8 +381,8 @@ def get_user_profile(clientId: str = "ANGEL-DEMO-99"):
     """
     global ACTIVE_SMARTCONNECT, ACTIVE_REFRESH_TOKEN
     
-    # If a live Angel One session is active, try to fetch real account info
-    if ACTIVE_SMARTCONNECT is not None:
+    # If a live Angel One session is active AND the requested client is not the demo simulator, fetch real info
+    if ACTIVE_SMARTCONNECT is not None and clientId != "ANGEL-DEMO-99":
         try:
             profile_res = ACTIVE_SMARTCONNECT.getProfile(ACTIVE_REFRESH_TOKEN)
             if profile_res.get("status") == True and "data" in profile_res:
@@ -447,7 +461,7 @@ def get_stocks():
         except Exception as e:
             print(f"[backend] Angel One LTP error: {e}. Falling back to Google Finance.")
     
-    # 2. Fallback: Concurrent Google Finance scraping
+    # 2. Fallback: Concurrent Google Finance scraping with individual robust fallbacks
     symbols_to_scrape = [k for k in STOCK_METADATA.keys() if k != "NIFTY50"]
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=len(symbols_to_scrape)) as executor:
@@ -458,7 +472,6 @@ def get_stocks():
             if res is not None:
                 current = res["price"]
                 pct = res["pct"]
-                # Estimate previous close based on price and percent
                 prev_close = current / (1.0 + pct / 100.0)
                 change = current - prev_close
                 
@@ -472,7 +485,48 @@ def get_stocks():
                     "changePct": round(pct, 2)
                 })
             else:
-                raise ValueError("Scraper returned None")
+                # Try getting last price via yfinance as a single-stock live fallback
+                print(f"[backend] Google Finance scrape returned None for {k}. Trying yfinance fallback.")
+                try:
+                    yf_sym = f"{k}.NS"
+                    yf_df = yf.download(yf_sym, period="2d", progress=False)
+                    if not yf_df.empty:
+                        if isinstance(yf_df.columns, pd.MultiIndex):
+                            yf_df.columns = [col[0] for col in yf_df.columns]
+                        current = float(yf_df["Close"].iloc[-1])
+                        prev_close = float(yf_df["Close"].iloc[-2]) if len(yf_df) > 1 else current
+                        change = current - prev_close
+                        change_pct = (change / prev_close) * 100 if prev_close > 0 else 0.0
+                        
+                        stocks_list.append({
+                            "symbol": k,
+                            "name": v["name"],
+                            "sector": v["sector"],
+                            "basePrice": round(prev_close, 2),
+                            "currentPrice": round(current, 2),
+                            "change": round(change, 2),
+                            "changePct": round(change_pct, 2)
+                        })
+                        continue
+                except Exception as yf_err:
+                    print(f"[backend] yfinance fallback failed for {k}: {yf_err}")
+                
+                # Dynamic simulated quote fallback for this specific stock
+                print(f"[backend] Falling back to simulated quote for {k}")
+                base = v["base_price"]
+                current = base * (1 + random.uniform(-0.005, 0.005))
+                prev_close = base
+                change = current - prev_close
+                change_pct = (change / prev_close) * 100
+                stocks_list.append({
+                    "symbol": k,
+                    "name": v["name"],
+                    "sector": v["sector"],
+                    "basePrice": round(prev_close, 2),
+                    "currentPrice": round(current, 2),
+                    "change": round(change, 2),
+                    "changePct": round(change_pct, 2)
+                })
         if len(stocks_list) > 0:
             return stocks_list
     except Exception as e:
@@ -707,11 +761,47 @@ def get_prediction(request: PredictRequest):
                 token_info = predef
         
     try:
+        # Fetch latest live price for real-time predictor alignment
+        live_price = None
+        if ACTIVE_SMARTCONNECT is not None:
+            try:
+                token_to_use = token_info or STOCK_TOKENS.get(request.symbol)
+                if token_to_use:
+                    ltp_res = ACTIVE_SMARTCONNECT.ltpData(
+                        exchange="NSE", 
+                        tradingsymbol=token_to_use["symbol"], 
+                        symboltoken=token_to_use["token"]
+                    )
+                    if ltp_res.get("status") == True and "data" in ltp_res and ltp_res["data"] is not None:
+                        live_price = float(ltp_res["data"].get("ltp", 0.0))
+            except Exception as e:
+                print(f"[backend] Angel One LTP fetch error during prediction: {e}")
+
+        if live_price is None:
+            try:
+                live_res = scrape_google_finance_price(request.symbol)
+                if live_res:
+                    live_price = live_res["price"]
+            except Exception as e:
+                print(f"[backend] Google Finance scrape error during prediction: {e}")
+
+        if live_price is None:
+            try:
+                yf_sym = f"{request.symbol}.NS" if request.symbol != "NIFTY50" else "^NSEI"
+                live_df = yf.download(yf_sym, period="1d", progress=False)
+                if not live_df.empty:
+                    if isinstance(live_df.columns, pd.MultiIndex):
+                        live_df.columns = [col[0] for col in live_df.columns]
+                    live_price = float(live_df["Close"].iloc[-1])
+            except Exception as e:
+                print(f"[backend] yfinance live price fetch error during prediction: {e}")
+
         prediction_results = predict_stock_price(
             request.symbol, 
             request.horizonDays, 
             smart_connect=ACTIVE_SMARTCONNECT, 
-            token_info=token_info
+            token_info=token_info,
+            live_price=live_price
         )
         
         # Sync results to Firebase
