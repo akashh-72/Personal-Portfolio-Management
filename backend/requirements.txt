@@ -5,7 +5,7 @@ numpy==1.26.4
 firebase-admin==6.5.0
 pyotp==2.9.0
 python-multipart==0.0.9
-yfinance==0.2.40
+yfinance==1.2.0
 smartapi-python==1.4.9
 logzero==1.7.0
 websocket-client==1.8.0
