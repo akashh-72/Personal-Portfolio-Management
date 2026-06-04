@@ -156,15 +156,8 @@ def generate_historical_data(symbol: str, days: int = 365, smart_connect=None, t
         yf_symbol = "^NSEI"
         
     try:
-        import requests
-        session = requests.Session()
-        session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-        })
-        # Download actual historical records using a browser requests Session to prevent rate limit blocks
-        df_yf = yf.download(yf_symbol, period="1y", interval="1d", progress=False, session=session)
+        # Download actual historical records using yfinance (which manages its own curl_cffi session to prevent blocks)
+        df_yf = yf.download(yf_symbol, period="1y", interval="1d", progress=False)
         
         if df_yf.empty or len(df_yf) < 10:
             df = generate_simulated_data(symbol, days)
@@ -226,12 +219,36 @@ def calculate_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df.bfill(inplace=True)
     return df
 
-def predict_stock_price(symbol: str, horizon_days: int = 30, smart_connect=None, token_info=None) -> dict:
+def predict_stock_price(symbol: str, horizon_days: int = 30, smart_connect=None, token_info=None, live_price: float = None) -> dict:
     """
     Runs a hybrid machine learning and statistical forecasting engine on real historical data.
     """
+    # Dynamic update of STOCK_METADATA base_price to keep simulated fallback aligned with real-time values
+    if live_price is not None and symbol in STOCK_METADATA:
+        STOCK_METADATA[symbol]["base_price"] = live_price
+
     # 1. Fetch historical data (real-time from yfinance or Angel One)
     hist_df = generate_historical_data(symbol, days=365, smart_connect=smart_connect, token_info=token_info)
+    
+    # 2. Append/update latest real-time quote if available
+    if live_price is not None and len(hist_df) > 0:
+        last_date = hist_df["Date"].iloc[-1]
+        today = pd.to_datetime(datetime.now().date())
+        if today > last_date:
+            new_row = pd.DataFrame([{
+                "Date": today,
+                "Open": live_price,
+                "High": live_price,
+                "Low": live_price,
+                "Close": live_price,
+                "Volume": hist_df["Volume"].iloc[-1]
+            }])
+            hist_df = pd.concat([hist_df, new_row], ignore_index=True)
+        else:
+            hist_df.loc[hist_df.index[-1], "Close"] = live_price
+            hist_df.loc[hist_df.index[-1], "High"] = max(hist_df.loc[hist_df.index[-1], "High"], live_price)
+            hist_df.loc[hist_df.index[-1], "Low"] = min(hist_df.loc[hist_df.index[-1], "Low"], live_price)
+            
     hist_df = calculate_technical_indicators(hist_df)
     
     sklearn_fit_successful = False
